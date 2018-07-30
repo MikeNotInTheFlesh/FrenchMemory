@@ -27,6 +27,7 @@ function Card(x, y, cardWidth, id, song = false) {
       // rect(this.x, this.y, this.w, this.h, this.w / 30);
 	  if (this.song) {
 		image(backRed, this.x, this.y, this.w, this.h);
+		image(musicNote, this.x, this.y, this.w, this.h);
 	  } else {
 		  image(backBlue, this.x, this.y, this.w, this.h);
 	  }

@@ -42,6 +42,7 @@ function setup() {
   tableCloth = loadImage("data/tableCloth.jpg");
   tableCloth.resize(width, height);
   musicImage = loadImage("data/musicImage.png");
+  musicNote = loadImage("data/musicNote.png");
   soundOn = loadImage("data/soundOn.gif");
   soundOff = loadImage("data/soundOff.gif");
   thumbsUp = loadImage("data/thumbsUp.png");
@@ -239,15 +240,15 @@ function mousePressed() {
 		if (hideCardsTimer < timerDelay * 2 - 6) {
 			hideCardsTimer = 1;
 		}
-		return;
+		return false;
 	} else if (correctGuessTimer > 0 && hideCardsTimer < timerDelay - 6) {
 		if (correctGuessTimer < timerDelay * 2 - 6) {
 			correctGuessTimer = 1;
 		}
-		return;
+		return false;
 		// bug fix. Starting a new game would select the first card.
 	} else if (timer < 5) {
-		return;
+		return false;
 	}
 	
 	// Did someone click a card?
@@ -264,7 +265,7 @@ function mousePressed() {
 		  }
 		  calls[cards[i].id].play();
 	  }
-      return;
+      return false;
     }
 	}
 	if (
@@ -275,6 +276,7 @@ function mousePressed() {
   ) {
     soundIcon.change();
   }
+  return false();
 }
 
 function checkGuess(id){
@@ -375,8 +377,10 @@ function newGame(tempNumCards) {
 function showName() {
 	push();
 	fill(85);
-	  textSize(min(width, height) / 10);
-	  textAlign(CENTER, CENTER);
+	textSize(min(width, height) / 10);
+	textAlign(CENTER, CENTER);
+	stroke(0);
+	strokeWeight(textSize);
 	  for (let card of cards){
 		  if (card.visible){
 			  let birdName = birds[card.id];
