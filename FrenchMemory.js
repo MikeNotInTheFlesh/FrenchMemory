@@ -21,6 +21,19 @@ function preload() {
 	// soundFormats('mp3');
 	correctPlay = loadSound('data/correctPlay.mp3');
 	levelComplete = loadSound('data/levelComplete.mp3');
+	
+  cardBack = loadImage("data/cardBack.jpg");
+  backRed = loadImage("data/backRed.jpg");
+  backBlue = loadImage("data/backBlue.jpg");
+  tableCloth = loadImage("data/tableCloth.jpg");
+  
+  musicImage = loadImage("data/musicImage.png");
+  musicNote = loadImage("data/musicNote.png");
+  soundOn = loadImage("data/soundOn.gif");
+  soundOff = loadImage("data/soundOff.gif");
+  thumbsUp = loadImage("data/thumbsUp.png");
+  thumbsDown = loadImage("data/thumbsDown.png");
+  myFont = loadFont('data/impact.ttf');
 }
 
 function setup() {
@@ -31,22 +44,13 @@ function setup() {
   // createCanvas(window.innerWidth * 0.95, window.innerHeight * 0.95);
   createCanvas(window.innerWidth * 1, window.innerHeight * 1);
   frameRate(30);
+  tableCloth.resize(width, height);
   
   cardW = min(height, width);
   createBoard(cardW);
-  myFont = loadFont('data/impact.ttf');
+  
   textFont(myFont);
-  cardBack = loadImage("data/cardBack.jpg");
-  backRed = loadImage("data/backRed.jpg");
-  backBlue = loadImage("data/backBlue.jpg");
-  tableCloth = loadImage("data/tableCloth.jpg");
-  tableCloth.resize(width, height);
-  musicImage = loadImage("data/musicImage.png");
-  musicNote = loadImage("data/musicNote.png");
-  soundOn = loadImage("data/soundOn.gif");
-  soundOff = loadImage("data/soundOff.gif");
-  thumbsUp = loadImage("data/thumbsUp.png");
-  thumbsDown = loadImage("data/thumbsDown.png");
+  
   soundIcon = new soundButton();
   
   if (buttons != null){
@@ -259,9 +263,13 @@ function mousePressed() {
     ){
       cards[i].visible = true;
       checkGuess(cards[i].id);
-	  if(cards[i].song && soundIcon) {
+	  // Check if card is a sound card
+	  if(cards[i].song && soundIcon.mode == "on") {
+		  // Stop any running sounds
 		  for (let call of calls) {
-			call.stop();
+			  if (call.isPlaying()) {
+				  call.stop();
+			  }
 		  }
 		  calls[cards[i].id].play();
 	  }
@@ -276,7 +284,7 @@ function mousePressed() {
   ) {
     soundIcon.change();
   }
-  return false();
+  return false;
 }
 
 function checkGuess(id){
@@ -287,8 +295,6 @@ function checkGuess(id){
     // do stuff for correct answer
     correctGuessTimer = timerDelay;
     score += numCards * 5;
-    //correctPlay.amp(0.8);
-    //correctPlay.play();
   } else{
     // do stuff for incorrect answer
     firstGuessId = -1;
@@ -298,18 +304,22 @@ function checkGuess(id){
 }
 
 function hideCards() {
-	// for (let call of calls) {
-		// call.stop();
-	// }
+	for (let call of calls) {
+		if (call.isPlaying()) {
+		  call.stop();
+		}
+	}
   for (let card of cards) {
     card.visible = false;
   }
 }
 
 function correctGuess() {
-	// for (let call of calls) {
-		// call.stop();
-	// }
+	for (let call of calls) {
+	  if (call.isPlaying()) {
+		call.stop();
+	  }
+	}
   if (cards.length == 2) {
     winFlag = true;
 	if (soundIcon.mode == 'on'){
@@ -317,9 +327,11 @@ function correctGuess() {
 	}
     return;
   }
-  // for (let call of calls) {
-		// call.stop();
-	// }
+  for (let call of calls) {
+	  if (call.isPlaying()) {
+	    call.stop();
+	  }
+	}
   for (let i = cards.length - 1; i >= 0; i--) {
     if (cards[i].id == firstGuessId) {
       cards.splice(i, 1);
